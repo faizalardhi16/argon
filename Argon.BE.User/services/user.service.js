@@ -8,7 +8,6 @@ import { renderQuery } from "../../Argon.BE.Library/helper/renderQuery.js";
 
 const User = db.users;
 const Profile = db.profiles;
-const Op = db.Sequelize.Op;
 
 const createUserService = async (input) => {
   const { email, password, role } = input;
