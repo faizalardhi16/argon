@@ -6,8 +6,10 @@ import { profileRoutes } from "./routes/profile.routes.js";
 
 const app = express();
 
-var corsOptions = {
-  origin: "http://localhost:3000",
+const allowedOrigins = ["http://localhost:3000", "http://localhost:4545"];
+
+const corsOptions = {
+  origin: allowedOrigins,
 };
 
 app.use(cors(corsOptions));

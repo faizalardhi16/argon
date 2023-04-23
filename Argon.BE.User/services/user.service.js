@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
 import sql from "../config/dbCon.js";
 import objectResponse from "../../Argon.BE.Library/helper/objectResponse.js";
+import { renderQuery } from "../../Argon.BE.Library/helper/renderQuery.js";
 
 const User = db.users;
 const Profile = db.profiles;
@@ -77,7 +78,7 @@ const getUserByEmailService = async (input) => {
     }
 
     const result = await sql.promise().query(
-      `select u.email, p.firstName, p.lastName, p.role from users u join profiles p on u.id = p.userId
+      `select u.email, u.password, u.id from users u join profiles p on u.id = p.userId
         where u.email='${email}'`
     );
 
@@ -100,7 +101,9 @@ const getAllUserService = async (input) => {
       `
         select u.email, p.firstName, p.lastName, p.role from users u 
         join profiles p on u.id = p.userId
-        where u.email LIKE '%${email}%' OR p.firstName LIKE '%${firstName}%'
+        where u.email LIKE '%${renderQuery(
+          email
+        )}%' OR p.firstName LIKE '%${renderQuery(firstName)}%'
       `
     );
 
