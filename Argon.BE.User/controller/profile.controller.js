@@ -7,7 +7,14 @@ const Update = async (req, res) => {
 
     res.status(response.status).send(apiResponse(response));
   } catch (error) {
-    res.status(500).send(apiResponse(500, error.message, null, false));
+    res.status(500).send(
+      apiResponse({
+        success: false,
+        message: error.message,
+        data: null,
+        status: 500,
+      })
+    );
   }
 };
 
