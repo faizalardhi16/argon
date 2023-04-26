@@ -47,11 +47,12 @@ const createAbsence = async (input, id) => {
 const getAbsence = async () => {
   try {
     const query = await sql.promise().query(`
-      select a.clockIn, a.clockOut, u.email from argon_db_absence.absences a
-      join argon_db_users.users u on a.userId=u.id
+      select clockIn, clockOut, email, firstName, lastName from argon_db_absence.absences a 
+      join argon_db_users.users u on a.userId = u.id
+      join argon_db_users.profiles p on u.id = p.userId
     `);
 
-    return objectResponse(200, "Success to load data", query[0][0], true);
+    return objectResponse(200, "Success to load data", query[0], true);
   } catch (error) {
     return objectResponse(500, error.message, null, false);
   }
