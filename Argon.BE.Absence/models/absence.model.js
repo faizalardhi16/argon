@@ -16,7 +16,10 @@ export const Absence = (sequelize, Sequelize) => {
         defaultValue: UUIDV4,
       },
       clockIn: Sequelize.DATE,
-      clockOut: Sequelize.DATE,
+      clockOut: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
       userId: {
         type: Sequelize.STRING(36),
         allowNull: false,

@@ -8,9 +8,8 @@ import objectResponse from "../../Argon.BE.Library/helper/objectResponse.js";
 const Profile = db.profiles;
 const User = db.users;
 
-const updateProfileService = async (input) => {
+const updateProfileService = async (input, id) => {
   const {
-    userId,
     password,
     currentPassword,
     firstName,
@@ -21,13 +20,13 @@ const updateProfileService = async (input) => {
   } = input;
 
   const schema = Joi.object({
-    userId: Joi.string().length(36).required(),
     firstName: Joi.string().min(1).max(100).optional(),
     lastName: Joi.string().min(1).max(100).optional(),
     role: Joi.string().optional(),
     password: Joi.string().min(8).optional(),
     currentPassword: Joi.string().min(8).optional(),
     address: Joi.string().min(1).max(255).optional(),
+    phoneNumber: Joi.optional(),
   });
 
   try {
@@ -42,7 +41,7 @@ const updateProfileService = async (input) => {
       `
         select u.email, u.password, p.firstName, p.lastName, p.address, p.role from users u
         join profiles p on u.id = p.userId
-        where u.id = '${userId}'
+        where u.id = '${id}'
       `
     );
 
@@ -70,7 +69,7 @@ const updateProfileService = async (input) => {
           {
             password: encryptPassword,
           },
-          { where: { id: userId } }
+          { where: { id: id } }
         );
       }
     }
@@ -83,14 +82,14 @@ const updateProfileService = async (input) => {
         address,
         phone: phoneNumber,
       },
-      { where: { userId: userId } }
+      { where: { userId: id } }
     );
 
     const afterUpdate = await sql.promise().query(
       `
         select u.email, p.firstName, p.lastName, p.address, p.role from users u
         join profiles p on u.id = p.userId
-        where userId = '${userId}'
+        where userId = '${id}'
       `
     );
 

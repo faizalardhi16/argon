@@ -52,10 +52,28 @@ export const GetAllUser = async (req, res) => {
   }
 };
 
+export const GetByUserId = async (req, res) => {
+  try {
+    const response = await userService.getDetailUserId(req.id);
+
+    res.status(response.status).send(apiResponse(response));
+  } catch (error) {
+    res.status(500).send(
+      apiResponse({
+        success: false,
+        message: error.message,
+        data: null,
+        status: 500,
+      })
+    );
+  }
+};
+
 const userController = {
   Create,
   GetByEmail,
   GetAllUser,
+  GetByUserId,
 };
 
 export default userController;

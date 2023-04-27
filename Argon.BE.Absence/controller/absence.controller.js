@@ -22,9 +22,33 @@ const GetAllAbsence = async (req, res) => {
   }
 };
 
+const GetAbsenceDetail = async (req, res) => {
+  try {
+    const response = await absenceService.getAbsenceDetail(req.params.id);
+
+    res.status(response.status).send(apiResponse(response));
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send(500, error.message, null, false);
+  }
+};
+
+const UpdateAbsence = async (req, res) => {
+  try {
+    const response = await absenceService.editAbsence(req.params.id, req.body);
+
+    res.status(response.status).send(apiResponse(response));
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send(500, error.message, null, false);
+  }
+};
+
 const absenceController = {
   Create,
   GetAllAbsence,
+  GetAbsenceDetail,
+  UpdateAbsence,
 };
 
 export default absenceController;

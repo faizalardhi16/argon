@@ -8,6 +8,7 @@ export const userRoutes = (app) => {
   router.post("/", authMiddleware, userController.Create);
   router.get("/", userController.GetByEmail);
   router.get("/getAll", authMiddleware, userController.GetAllUser);
+  router.get("/detail", authMiddleware, userController.GetByUserId);
 
   app.use("/api/v1/users", router);
 };

@@ -119,10 +119,31 @@ const getAllUserService = async (input) => {
   }
 };
 
+const getDetailUserId = async (id) => {
+  try {
+    const result = await sql.promise().query(
+      `
+        select u.email, p.firstName, p.lastName, p.address, p.phone, p.role from users u
+        join profiles p on u.id = p.userId
+        where u.id='${id}'
+      `
+    );
+
+    const response = result[0];
+
+    console.log(response[0]);
+
+    return objectResponse(200, "Success to load data", response[0], true);
+  } catch (error) {
+    return objectResponse(500, error.message, null, false);
+  }
+};
+
 const userService = {
   createUserService,
   getUserByEmailService,
   getAllUserService,
+  getDetailUserId,
 };
 
 export default userService;

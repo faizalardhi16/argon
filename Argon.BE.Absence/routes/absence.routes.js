@@ -7,6 +7,8 @@ export const absenceRoutes = (app) => {
 
   router.post("/", authMiddleware, absenceController.Create);
   router.get("/", absenceController.GetAllAbsence);
+  router.get("/detail/:id", absenceController.GetAbsenceDetail);
+  router.put("/detail/:id", absenceController.UpdateAbsence);
 
   app.use("/api/v1/absence", router);
 };

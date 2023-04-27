@@ -3,7 +3,10 @@ import profileService from "../services/profile.service.js";
 
 const Update = async (req, res) => {
   try {
-    const response = await profileService.updateProfileService(req.body);
+    const response = await profileService.updateProfileService(
+      req.body,
+      req.id
+    );
 
     res.status(response.status).send(apiResponse(response));
   } catch (error) {
