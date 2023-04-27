@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import sql from "../config/dbCon.js";
 import objectResponse from "../../Argon.BE.Library/helper/objectResponse.js";
 import { renderQuery } from "../../Argon.BE.Library/helper/renderQuery.js";
+import s3 from "../../Argon.BE.Library/helper/awsConfig.js";
 
 const User = db.users;
 const Profile = db.profiles;
@@ -123,17 +124,32 @@ const getDetailUserId = async (id) => {
   try {
     const result = await sql.promise().query(
       `
-        select u.email, p.firstName, p.lastName, p.address, p.phone, p.role from users u
+        select u.email, p.firstName, p.lastName, p.address, p.phone, p.role, p.avatar from users u
         join profiles p on u.id = p.userId
         where u.id='${id}'
       `
     );
 
+    let urlAws = "";
+
+    if (result[0][0] && result[0][0].avatar) {
+      const params = {
+        Bucket: "mygobucketzores",
+        Key: result[0][0].avatar,
+        Expires: 300, // URL expires in 5 minutes (300 seconds)
+      };
+
+      urlAws = await s3.getSignedUrl("getObject", params);
+    }
+
     const response = result[0];
 
-    console.log(response[0]);
-
-    return objectResponse(200, "Success to load data", response[0], true);
+    return objectResponse(
+      200,
+      "Success to load data",
+      { ...response[0], url: urlAws },
+      true
+    );
   } catch (error) {
     return objectResponse(500, error.message, null, false);
   }

@@ -17,10 +17,11 @@ export const authMiddleware = async (req, res, next) => {
 
     next();
   } catch (error) {
+    console.log(error.response);
     res.status(401).send(
       apiResponse({
         success: false,
-        message: error.response.data.meta.message,
+        message: "Error on Middleware Login",
         data: null,
         status: 401,
       })
