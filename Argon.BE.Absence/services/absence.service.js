@@ -54,6 +54,8 @@ const getAbsence = async () => {
       order by a.createdAt desc
     `);
 
+    console.log(query, "QER");
+
     return objectResponse(200, "Success to load data", query[0], true);
   } catch (error) {
     return objectResponse(500, error.message, null, false);

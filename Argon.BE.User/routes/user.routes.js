@@ -5,10 +5,11 @@ import { authMiddleware } from "../../Argon.BE.Library/helper/authMiddleware.js"
 export const userRoutes = (app) => {
   const router = Router();
 
-  router.post("/", authMiddleware, userController.Create);
+  router.post("/", userController.Create);
   router.get("/", userController.GetByEmail);
-  router.get("/getAll", authMiddleware, userController.GetAllUser);
+  router.get("/getAll", userController.GetAllUser);
   router.get("/detail", authMiddleware, userController.GetByUserId);
+  router.get("/detail/:id", userController.GetByUserId);
 
   app.use("/api/v1/users", router);
 };

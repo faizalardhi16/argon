@@ -99,7 +99,7 @@ const getAllUserService = async (input) => {
   try {
     const result = await sql.promise().query(
       `
-        select u.email, p.firstName, p.lastName, p.role from users u 
+        select u.email, p.firstName, p.lastName, p.role, p.phone, u.id from users u 
         join profiles p on u.id = p.userId
         where u.email LIKE '%${renderQuery(
           email

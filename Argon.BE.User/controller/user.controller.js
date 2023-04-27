@@ -54,9 +54,15 @@ export const GetAllUser = async (req, res) => {
 
 export const GetByUserId = async (req, res) => {
   try {
-    const response = await userService.getDetailUserId(req.id);
+    if (!req.id) {
+      const response = await userService.getDetailUserId(req.params.id);
 
-    res.status(response.status).send(apiResponse(response));
+      res.status(response.status).send(apiResponse(response));
+    } else {
+      const response = await userService.getDetailUserId(req.id);
+
+      res.status(response.status).send(apiResponse(response));
+    }
   } catch (error) {
     res.status(500).send(
       apiResponse({

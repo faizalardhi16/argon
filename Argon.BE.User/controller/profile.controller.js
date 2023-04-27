@@ -17,7 +17,7 @@ const Update = async (req, res) => {
   try {
     const response = await profileService.updateProfileService(
       req.body,
-      req.id
+      req.id ? req.id : req.params.id
     );
 
     res.status(response.status).send(apiResponse(response));
@@ -35,36 +35,69 @@ const Update = async (req, res) => {
 
 const UploadAvatar = async (req, res) => {
   try {
-    const file = req.file;
-    const id = req.id;
+    if (req.id) {
+      const file = req.file;
+      const id = req.id;
 
-    if (!file) {
-      return res.status(400).send("No file uploaded");
-    }
-
-    const params = {
-      Bucket: "mygobucketzores",
-      Key: `${Date.now()}-${file.originalname}`,
-      Body: file.buffer,
-    };
-
-    await Profile.update(
-      {
-        avatar: `${Date.now()}-${file.originalname}`,
-      },
-      { where: { userId: id } }
-    );
-
-    s3.upload(params, async (err, data) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send("Error uploading file");
+      if (!file) {
+        return res.status(400).send("No file uploaded");
       }
 
-      res.status(200).send({
-        message: "success to upload file!",
+      const params = {
+        Bucket: "mygobucketzores",
+        Key: `${Date.now()}-${file.originalname}`,
+        Body: file.buffer,
+      };
+
+      await Profile.update(
+        {
+          avatar: `${Date.now()}-${file.originalname}`,
+        },
+        { where: { userId: id } }
+      );
+
+      s3.upload(params, async (err, data) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send("Error uploading file");
+        }
+
+        res.status(200).send({
+          message: "success to upload file!",
+        });
       });
-    });
+    } else {
+      const file = req.file;
+      const id = req.params.id;
+
+      if (!file) {
+        return res.status(400).send("No file uploaded");
+      }
+
+      const params = {
+        Bucket: "mygobucketzores",
+        Key: `${Date.now()}-${file.originalname}`,
+        Body: file.buffer,
+      };
+
+      await Profile.update(
+        {
+          avatar: `${Date.now()}-${file.originalname}`,
+        },
+        { where: { userId: id } }
+      );
+
+      s3.upload(params, async (err, data) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send("Error uploading file");
+        }
+
+        res.status(200).send({
+          message: "success to upload file!",
+        });
+      });
+    }
   } catch (err) {
     res.status(500).send({
       message: `Could not upload the file`,
