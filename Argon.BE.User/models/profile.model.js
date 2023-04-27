@@ -20,6 +20,7 @@ export const Profile = (sequelize, Sequelize) => {
       address: Sequelize.STRING(100),
       role: Sequelize.STRING(100),
       phone: Sequelize.STRING(15),
+      avatar: Sequelize.STRING(100),
     },
     {
       sequelize,
