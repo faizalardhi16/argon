@@ -1,7 +1,7 @@
 import db from "../models/index.js";
 import Joi from "joi";
 import bcrypt from "bcrypt";
-
+import s3 from "../../Argon.BE.Library/helper/awsConfig.js";
 import sql from "../config/dbCon.js";
 import objectResponse from "../../Argon.BE.Library/helper/objectResponse.js";
 
@@ -87,16 +87,28 @@ const updateProfileService = async (input, id) => {
 
     const afterUpdate = await sql.promise().query(
       `
-        select u.email, p.firstName, p.lastName, p.address, p.role from users u
+        select u.email, p.firstName, p.lastName, p.address, p.role, p.avatar from users u
         join profiles p on u.id = p.userId
         where userId = '${id}'
       `
     );
 
+    let urlAws = "";
+
+    if (afterUpdate[0][0] && afterUpdate[0][0].avatar) {
+      const params = {
+        Bucket: "mygobucketzores",
+        Key: afterUpdate[0][0].avatar,
+        Expires: 300, // URL expires in 5 minutes (300 seconds)
+      };
+
+      urlAws = await s3.getSignedUrl("getObject", params);
+    }
+
     return objectResponse(
       200,
       "Success to update user",
-      afterUpdate[0][0],
+      { ...afterUpdate[0][0], url: urlAws },
       true
     );
   } catch (error) {
